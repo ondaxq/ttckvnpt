@@ -1,3 +1,6 @@
+<?php
+session_start(); 
+?>
 <!DOCTYPE html>
 <html lang="vi">
 <head>
@@ -12,7 +15,7 @@
 </head>
 <body>
     <?php include 'header.php'; ?>
-
+    
     <main>
     <div class="left-menu">
                 <ul>
