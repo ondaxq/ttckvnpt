@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Dec 20, 2024 at 10:09 AM
+-- Generation Time: Dec 23, 2024 at 02:47 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.0.30
 
@@ -112,7 +112,7 @@ INSERT INTO `lienhe` (`idlienhe`, `idnguoidung`, `hoten`, `sdt`, `noidung`, `nga
 CREATE TABLE `nguoidung` (
   `idnguoidung` int(6) NOT NULL,
   `tendangnhap` varchar(50) NOT NULL,
-  `matkhau` varchar(50) NOT NULL,
+  `matkhau` varchar(255) NOT NULL,
   `hoten` varchar(50) NOT NULL,
   `sdt` varchar(11) NOT NULL,
   `vaitro` int(2) NOT NULL,
@@ -124,8 +124,9 @@ CREATE TABLE `nguoidung` (
 --
 
 INSERT INTO `nguoidung` (`idnguoidung`, `tendangnhap`, `matkhau`, `hoten`, `sdt`, `vaitro`, `email`) VALUES
-(1, 'admin', 'admin', 'admin', '0123456789', 1, 'admin@gmail.com'),
-(2, 'a', 'a', 'a', '0123456789', 0, 'a@gmail.com');
+(1, 'admin', '$2y$10$kL.Ifb5Y4q6XdNWsT1hO5O82RHy1boR5eJnQ8ul..NV9APcE3gD2i', 'admin', '0123456788', 1, 'admin@gmail.com'),
+(2, 'a', 'a', 'a', '0123456789', 0, 'a@gmail.com'),
+(26, 'bb', '$2y$10$2PIkBOSMkQP6sYexhft9reOldxfxjZCj//o31jFXYI61xSodK3.P2', 'Anhhhhhhhhh', '0123456784', 0, 'daaa@gmail.com');
 
 -- --------------------------------------------------------
 
@@ -280,7 +281,7 @@ ALTER TABLE `lienhe`
 -- AUTO_INCREMENT for table `nguoidung`
 --
 ALTER TABLE `nguoidung`
-  MODIFY `idnguoidung` int(6) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=23;
+  MODIFY `idnguoidung` int(6) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=28;
 
 --
 -- Constraints for dumped tables
