@@ -146,6 +146,7 @@ $categories = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
     var showRegisterModal = document.getElementById("showRegisterModal");
     var showLoginModal = document.getElementById("showLoginModal");
+
     loginBtn.onclick = function() {
         loginModal.style.display = "block";
     }
@@ -161,6 +162,7 @@ $categories = $stmt->fetchAll(PDO::FETCH_ASSOC);
     closeRegisterModal.onclick = function() {
         registerModal.style.display = "none";
     }
+
     showLoginModal.onclick = function() {
         registerModal.style.display = "none"; 
         loginModal.style.display = "block"; 
