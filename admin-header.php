@@ -1,5 +1,5 @@
 <?php
-session_start();
+
 include 'db.php'; 
 if (isset($_SESSION['tendangnhap'])) {
     $tendangnhap = $_SESSION['tendangnhap'];

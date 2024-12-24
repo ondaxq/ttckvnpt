@@ -1,9 +1,42 @@
-<!DOCTYPE html>
+<?php
+session_start();
+include 'db.php'; 
+
+// Xử lý tìm kiếm
+$query = isset($_GET['query']) ? $_GET['query'] : '';  // Lấy từ khóa tìm kiếm từ URL
+$tendangnhap = isset($_SESSION['tendangnhap']) ? $_SESSION['tendangnhap'] : null;
+
+// Lấy thông tin người dùng (nếu có)
+if ($tendangnhap) {
+    $stmt = $pdo->prepare("SELECT hoten, sdt FROM nguoidung WHERE tendangnhap = :tendangnhap");
+    $stmt->execute(['tendangnhap' => $tendangnhap]);
+    $user = $stmt->fetch(PDO::FETCH_ASSOC);
+} else {
+    $user = null;
+}
+
+// Xử lý tìm kiếm sản phẩm
+$sql = "SELECT * FROM sanpham";
+if ($query) {
+    $sql .= " WHERE Ten LIKE :query OR NhaCungCap LIKE :query";
+}
+
+$stmt = $pdo->prepare($sql);
+
+if ($query) {
+    $stmt->execute(['query' => '%' . $query . '%']);
+} else {
+    $stmt->execute();
+}
+
+$products = $stmt->fetchAll(PDO::FETCH_ASSOC);
+?>
+
 <html lang="vi">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Quản Lý Sản Phẩm</title>
+    <title>Quản Lý Cửa Hàng</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
     <link rel="stylesheet" type="text/css" href="admin.css?<?php echo time(); ?>" />
     <link rel="stylesheet" type="text/css" href="admin-sanpham.css?<?php echo time(); ?>" />
@@ -19,7 +52,7 @@
             <div class="find flex flex-col items-center justify-center">
                 <form action="" method="get" class="flex items-center justify-center">
                     <input type="text" name="query" placeholder="Tìm kiếm sản phẩm..." class="border rounded-l-lg px-3 py-2 w-64">
-                    <button type="submit" class="btn-find">
+                    <button type="submit" class="btn-find ">
                         <i class="fas fa-search"></i>
                     </button>
                 </form>
@@ -27,73 +60,42 @@
             <button onclick="openAddModal()" class="new-product text-white rounded-md flex items-center px-4 py-2">
                 <i class="fas fa-plus mr-2"></i> Thêm sản phẩm mới
             </button>
-        </div>
 
-        <ul id="productList" class="bg-white shadow-md rounded-lg border border-gray-200">
-            <!-- Các sản phẩm sẽ được thêm vào đây bằng JavaScript -->
-        </ul>
+        </div>
+            
+            <ul class="bg-white shadow-md rounded-lg border border-gray-200">
+                <?php if ($products): ?>
+                    <?php foreach ($products as $product): ?>
+                        <li class="p-4 border-b border-gray-200 flex justify-between items-center">
+                            <div class="flex items-center">
+                                <img alt="Product Image" class="product-img" height="50" src="<?php echo $product['HinhAnh']; ?>" width="50"/>
+                                <div>
+                                    <h3 class="text-lg font-semibold"><?php echo htmlspecialchars($product['Ten']); ?></h3>
+                                    <p class="text-gray-600"><?php echo htmlspecialchars($product['NhaCungCap']); ?></p>
+                                </div>
+                            </div>
+                            <div>
+                                <!-- Nút chỉnh sửa sẽ gọi openEditModal với id của sản phẩm -->
+                                <button class="btn-edit text-blue-500 hover:text-blue-700" onclick="openEditModal(<?php echo $product['Id']; ?>)">
+                                    <i class="fas fa-edit"></i> Chỉnh sửa
+                                </button>
+
+                                <button class="btn-delete text-red-500 hover:text-red-700 ml-2" onclick="deleteProduct(<?php echo $product['Id']; ?>)">
+                                    <i class="fas fa-trash"></i> Xóa
+                                </button>
+                            </div>
+                        </li>
+                    <?php endforeach; ?>
+                <?php else: ?>
+                    <li class="p-4">
+                        <p class="text-gray-600">Không có sản phẩm nào trong hệ thống.</p>
+                    </li>
+                <?php endif; ?>
+            </ul>
         </main>
     </div>
 </div>
 
-<!-- Modal Edit sản phẩm-->
-<div id="editModal" class="hidden fixed inset-0 flex items-center justify-center bg-gray-500 bg-opacity-50">
-    <div class="modal-content bg-white p-6 rounded-lg shadow-lg w-150">
-        <h2 class="text-xl font-semibold mb-4">Chỉnh sửa sản phẩm</h2>
-        <form id="editProductForm" action="admin-sua-sanpham.php" method="POST" enctype="multipart/form-data">
-            <input type="hidden" name="id" id="productId">
-
-            <div class="prob">
-                <label for="ten" class="text-sm font-medium text-gray-700">Tên sản phẩm</label>
-                <input type="text" name="ten" id="ten" class="mt-1 p-2 w-full border border-gray-300 rounded-md" required>
-            </div>
-
-            <!-- Các trường khác -->
-        </form>
-    </div>
-</div>
-
-<script>
-    // Hàm để lấy danh sách sản phẩm từ API
-    async function fetchProducts() {
-        try {
-            const response = await fetch('beadmin-sanpham.php'); // Thay đổi URL của API
-            const products = await response.json(); // Giả sử API trả về dữ liệu dạng JSON
-
-            const productList = document.getElementById('productList');
-            productList.innerHTML = ''; // Xóa nội dung cũ nếu có
-
-            // Lặp qua các sản phẩm và hiển thị chúng
-            products.forEach(product => {
-                const productItem = document.createElement('li');
-                productItem.classList.add('p-4', 'border-b', 'border-gray-200', 'flex', 'justify-between', 'items-center');
-                productItem.innerHTML = `
-                    <div class="flex items-center">
-                        <img alt="Product Image" class="product-img" height="50" src="${product.HinhAnh}" width="50"/>
-                        <div>
-                            <h3 class="text-lg font-semibold">${product.Ten}</h3>
-                            <p class="text-gray-600">${product.NhaCungCap}</p>
-                        </div>
-                    </div>
-                    <div>
-                        <button class="btn-edit text-blue-500 hover:text-blue-700" onclick="openEditModal(${product.Id})">
-                            <i class="fas fa-edit"></i> Chỉnh sửa
-                        </button>
-                        <button class="btn-delete text-red-500 hover:text-red-700 ml-2" onclick="deleteProduct(${product.Id})">
-                            <i class="fas fa-trash"></i> Xóa
-                        </button>
-                    </div>
-                `;
-                productList.appendChild(productItem);
-            });
-        } catch (error) {
-            console.error('Lỗi khi lấy sản phẩm:', error);
-        }
-    }
-
-    // Gọi hàm fetchProducts để tải dữ liệu sản phẩm khi trang được tải
-    document.addEventListener('DOMContentLoaded', fetchProducts);
-</script>
 <!-- Modal Edit sản phẩm-->
 <div id="editModal" class="hidden fixed inset-0 flex items-center justify-center bg-gray-500 bg-opacity-50">
     <div class="modal-content bg-white p-6 rounded-lg shadow-lg w-150">
@@ -454,5 +456,6 @@ function deleteProduct(productId) {
     }
 }
 </script>
+
 </body>
 </html>
