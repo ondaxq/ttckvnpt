@@ -6,7 +6,7 @@ if (isset($_SESSION['tendangnhap'])) {
     $stmt->execute(['tendangnhap' => $tendangnhap]);
     $user = $stmt->fetch(PDO::FETCH_ASSOC);
 } else {
-    $user = null; 
+    $user = null;
 }
 $stmt = $pdo->prepare("SELECT DISTINCT PhanLoai FROM sanpham");
 $stmt->execute();
@@ -51,7 +51,6 @@ $categories = $stmt->fetchAll(PDO::FETCH_ASSOC);
                 <div id="user-dropdown" style="display: none;">
                     <div>
                         <span><?= $user['hoten'] ?></span>
-                        <br>
                         <span><?= $user['sdt'] ?></span>
                     </div>
                     <ul>
@@ -136,6 +135,9 @@ $categories = $stmt->fetchAll(PDO::FETCH_ASSOC);
     </div>
 </div>
 <script>
+
+
+    // Lấy các phần tử modal và nút
     var loginModal = document.getElementById("loginModal");
     var loginBtn = document.getElementById("loginBtn");
     var closeLoginModal = document.getElementById("closeModal");
@@ -147,32 +149,37 @@ $categories = $stmt->fetchAll(PDO::FETCH_ASSOC);
     var showRegisterModal = document.getElementById("showRegisterModal");
     var showLoginModal = document.getElementById("showLoginModal");
 
+    // Mở modal đăng nhập
     loginBtn.onclick = function() {
         loginModal.style.display = "block";
     }
 
+    // Đóng modal đăng nhập
     closeLoginModal.onclick = function() {
         loginModal.style.display = "none";
     }
 
+    // Mở modal đăng ký
     registerBtn.onclick = function() {
-        registerModal.style.display = "block"; 
+        registerModal.style.display = "block"; // Mở modal đăng ký
     }
 
+    // Đóng modal đăng ký
     closeRegisterModal.onclick = function() {
         registerModal.style.display = "none";
     }
 
+    // Mở modal đăng nhập từ modal đăng ký
     showLoginModal.onclick = function() {
-        registerModal.style.display = "none"; 
-        loginModal.style.display = "block"; 
+        registerModal.style.display = "none"; // Đóng modal đăng ký nếu đang mở
+        loginModal.style.display = "block"; // Mở modal đăng nhập
     }
 
     showRegisterModal.onclick = function() {
         loginModal.style.display = "none";
         registerModal.style.display = "block";
     }
-   
+    // Đóng modal khi nhấp bên ngoài
     window.onclick = function(event) {
         if (event.target == loginModal) {
             loginModal.style.display = "none";
