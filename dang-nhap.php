@@ -3,7 +3,7 @@ session_start();
 $servername = "localhost";
 $username = "root";
 $password = "";
-$database = "qldoanmypham1";
+$database = "qldoanmypham";
 
 $conn = new mysqli($servername, $username, $password, $database);
 if ($conn->connect_error) {
