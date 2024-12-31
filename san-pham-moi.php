@@ -2,22 +2,20 @@
 session_start(); 
 include 'db.php';
 
-$items_per_page = 28;
+$items_per_page = 32;
 
-// Xác định trang hiện tại từ query string
 $current_page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
-$current_page = max(1, $current_page); // Đảm bảo trang bắt đầu từ 1
+$current_page = max(1, $current_page); 
 
-// Tính toán OFFSET
 $offset = ($current_page - 1) * $items_per_page;
 
-// Đếm tổng số mặt hàng 
-$total_stmt = $pdo->query("SELECT COUNT(*) FROM sanpham");
+$total_stmt = $pdo->query("SELECT COUNT(*) FROM sanpham ");
 $total_items = $total_stmt->fetchColumn();
-$total_pages = ceil($total_items / $items_per_page); // Tính số trang
+$total_pages = ceil($total_items / $items_per_page); 
 
-// Lấy sản phẩm từ cơ sở dữ liệu với OFFSET và LIMIT
-$stmt = $pdo->prepare("SELECT * FROM sanpham LIMIT :limit OFFSET :offset");
+//Sản phẩm được nhập về trong vòng 1 tháng là sản phẩm mới
+$stmt = $pdo->prepare("SELECT * FROM sanpham WHERE NgayNhapHang >= NOW() - INTERVAL 1 MONTH LIMIT :limit OFFSET :offset");
+
 $stmt->bindValue(':limit', $items_per_page, PDO::PARAM_INT);
 $stmt->bindValue(':offset', $offset, PDO::PARAM_INT);
 $stmt->execute();
@@ -35,13 +33,16 @@ if ($login_error) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cửa Hàng Mỹ Phẩm</title>
+    <title>Cửa Hàng Mỹ Phẩm - Sản phẩm mới</title>
     <link rel="stylesheet" type="text/css" href="style.css?<?php echo time(); ?>" />
     <link rel="stylesheet" type="text/css" href="header.css?<?php echo time(); ?>" />
     <link rel="stylesheet" type="text/css" href="footer.css?<?php echo time(); ?>" />
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/flowbite@2.5.2/dist/flowbite.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
 <body>
+    
     <?php include 'header.php'; ?>
     <main>
     <div class="left-menu">
@@ -69,37 +70,11 @@ if ($login_error) {
         lastScrollTop = currentScroll <= 0 ? 0 : currentScroll; // Đảm bảo không cuộn lên quá đầu trang
     });
 </script>
+    <tl class="font-semibold ">Sản phẩm mới</tl>
     <section>
-    <div class="banner">
-        <img class="banner-image" src="./img/banner1.jpg" alt="Banner Image 1" />
-        <img class="banner-image" src="./img/banner2.jpg" alt="Banner Image 2" />
-        <img class="banner-image" src="./img/banner3.jpg" alt="Banner Image 3" />
-        <button class="prev" onclick="showPreviousImage()">&#10094;</button>
-        <button class="next" onclick="showNextImage()">&#10095;</button>
-    </div>
-    <script>
-        let currentIndex = 0;
-        const images = document.querySelectorAll('.banner-image');
-        const totalImages = images.length;
-
-        images[currentIndex].classList.add('active');
-
-        function showNextImage() {
-            images[currentIndex].classList.remove('active'); 
-            currentIndex = (currentIndex + 1) % totalImages; 
-            images[currentIndex].classList.add('active');
-        }
-
-        function showPreviousImage() {
-            images[currentIndex].classList.remove('active'); 
-            currentIndex = (currentIndex - 1 + totalImages) % totalImages; 
-            images[currentIndex].classList.add('active');
-        }
-        setInterval(showNextImage, 3000); 
-    </script>
-
     <div class="product-list">
-    <?php foreach ($products as $product): 
+        
+        <?php foreach ($products as $product): 
             // Lấy giá gốc và tỷ lệ giảm giá
             $originalPrice = $product['Gia'];
             $discountPercentage = $product['GiamGia']; // Giảm giá theo phần trăm
@@ -132,9 +107,10 @@ if ($login_error) {
                         <button type="button" onclick="alert('Bạn cần đăng nhập để thêm vào giỏ!');" class="add-to-cart">Thêm vào giỏ</button>
                     </a>
                 </div>
-        <?php endforeach;?>
+        <?php endforeach;?> 
     </div>
 
+    <!-- Pagination -->
     <div class="pagination">
         <?php if ($current_page > 1): ?>
             <a href="?page=<?= $current_page - 1 ?>">« Trang trước</a>
@@ -150,6 +126,7 @@ if ($login_error) {
     </div>
     </section>
     </main>
+
     <?php include 'footer.php'; ?>
 </body>
 </html>

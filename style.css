@@ -114,6 +114,7 @@ main {
     width: 100%;
     overflow: hidden;
     z-index: 0;
+    transform: translateX(2.8%);
 }
 
 .banner-image {
@@ -240,7 +241,7 @@ tl{
 .left-menu {
     position: fixed; 
     top: 95px;
-    left: 25px;
+    left: 0%;
     width: 150px;
     height: auto;
     background-color: #f5f5f5;
