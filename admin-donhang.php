@@ -113,12 +113,14 @@ if (isset($_GET['error']) && $_GET['error'] == 1) {
                                 <p class="text-blue-600"><?php echo number_format($order['thanhtien'], 0, ',', '.'); ?>đ</p>
                             </div>
                             <div>
-                                <button class="text-blue-500 hover:text-blue-700" onclick="openOrderDetailModal(<?php echo $order['iddonhang']; ?>)">
+                                <button class="btn-detail text-blue-500 hover:text-blue-700" onclick="openOrderDetailModal(<?php echo $order['iddonhang']; ?>)">
                                     <i class="fas fa-info-circle"></i> Chi tiết
                                 </button>
-                                <button class="text-red-500 hover:text-red-700 ml-2" onclick="deleteOrder(<?php echo $order['iddonhang']; ?>)">
+
+                                <button class="btn-delete text-red-500 hover:text-red-700 ml-2" onclick="deleteOrder(<?php echo $order['iddonhang']; ?>)">
                                     <i class="fas fa-trash"></i> Xóa
                                 </button>
+
                             </div>
                         </li>
                     <?php endforeach; ?>

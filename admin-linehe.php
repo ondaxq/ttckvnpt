@@ -75,13 +75,19 @@ if (isset($_GET['error']) && $_GET['error'] == 1) {
                             </div>
                             <div>
                                 <!-- Nút chi tiết -->
+<<<<<<< HEAD
                                 <button class="text-blue-500 hover:text-blue-700" onclick="openEdit Modal(<?php echo $contact['idlienhe']; ?>)">
+=======
+                                <button class="btn-detail" onclick="openEditModal(<?php echo $contact['idlienhe']; ?>)">
+>>>>>>> f5d4c5eac524cc3cb8b952d566b747fc3ee66b61
                                     <i class="fas fa-info-circle"></i> Chi tiết
                                 </button>
 
                                 <!-- Nút xóa -->
-                                <button class="text-red-500 hover:text-red-700 ml-2" onclick="deleteContact(<?php echo $contact['idlienhe']; ?>)">
+                                <button class="btn-delete" onclick="deleteContact(<?php echo $contact['idlienhe']; ?>)">
                                     <i class="fas fa-trash"></i> Xóa
+                                </button>
+
                                 </button>
                             </div>
                         </li>

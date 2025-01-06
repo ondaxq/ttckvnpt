@@ -66,12 +66,25 @@ $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
                                 </div>
                             </div>
                             <div>
+<<<<<<< HEAD
                                 <button class="text-blue-500 hover:text-blue-700" onclick="openEditModal(<?php echo $user['idnguoidung']; ?>)">
                                     <i class="fas fa-info-circle"></i> Chi tiết
                                 </button>
                                 <button class="text-red-500 hover:text-red-700 ml-2" onclick="deleteUser (<?php echo $user['idnguoidung']; ?>)">
                                     <i class="fas fa-trash"></i> Xóa
                                 </button>
+=======
+                                    <!-- Nút chi tiết -->
+                                    <button class="btn-detail" onclick="openEditModal(<?php echo $users['idnguoidung']; ?>)">
+                                        <i class="fas fa-info-circle"></i> Chi tiết
+                                    </button>
+
+                                    <!-- Nút xóa -->
+                                    <button class="btn-delete" onclick="deleteUser(<?php echo $users['idnguoidung']; ?>)">
+                                        <i class="fas fa-trash"></i> Xóa
+                                    </button>
+
+>>>>>>> f5d4c5eac524cc3cb8b952d566b747fc3ee66b61
                             </div>
                         </li>
                     <?php endforeach; ?>

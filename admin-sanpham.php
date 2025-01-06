@@ -2,6 +2,11 @@
 session_start();
 include 'db.php'; 
 
+// Phân trang
+$page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
+$limit = 10; // Số sản phẩm mỗi trang
+$offset = ($page - 1) * $limit;
+
 // Xử lý tìm kiếm
 $query = isset($_GET['query']) ? $_GET['query'] : '';  // Lấy từ khóa tìm kiếm từ URL
 $tendangnhap = isset($_SESSION['tendangnhap']) ? $_SESSION['tendangnhap'] : null;
@@ -15,6 +20,7 @@ if ($tendangnhap) {
     $user = null;
 }
 
+<<<<<<< HEAD
 // Số sản phẩm trên mỗi trang
 $productsPerPage = 15;
 
@@ -32,11 +38,17 @@ $totalPages = ceil($totalProducts / $productsPerPage);
 $offset = ($currentPage - 1) * $productsPerPage;
 
 // Xử lý tìm kiếm sản phẩm
+=======
+/// Xử lý tìm kiếm sản phẩm
+>>>>>>> f5d4c5eac524cc3cb8b952d566b747fc3ee66b61
 $sql = "SELECT * FROM sanpham";
 if ($query) {
     $sql .= " WHERE Ten LIKE :query OR NhaCungCap LIKE :query";
 }
 $sql .= " LIMIT :limit OFFSET :offset";
+
+// Thêm LIMIT và OFFSET vào cuối câu truy vấn
+$sql .= " LIMIT $limit OFFSET $offset";  // Truyền giá trị thực tế cho LIMIT và OFFSET
 
 $stmt = $pdo->prepare($sql);
 
@@ -48,6 +60,19 @@ $stmt->bindValue(':offset', $offset, PDO::PARAM_INT);
 $stmt->execute();
 
 $products = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+// Tính tổng số sản phẩm để phân trang
+$sqlTotal = "SELECT COUNT(*) AS total FROM sanpham WHERE Ten LIKE :query OR NhaCungCap LIKE :query";
+$stmtTotal = $pdo->prepare($sqlTotal);
+
+if ($query) {
+    $stmtTotal->execute(['query' => '%' . $query . '%']);
+} else {
+    $stmtTotal->execute(['query' => '%']);
+}
+
+$totalProducts = $stmtTotal->fetch(PDO::FETCH_ASSOC)['total'];
+$totalPages = ceil($totalProducts / $limit);  // Tính số trang
 ?>
 
 <html lang="vi">
@@ -69,8 +94,13 @@ $products = $stmt->fetchAll(PDO::FETCH_ASSOC);
             <h1 class="text-3xl font-bold">Quản lý sản phẩm</h1>
             <div class="find flex flex-col items-center justify-center">
                 <form action="" method="get" class="flex items-center justify-center">
+<<<<<<< HEAD
                     <input type="text" name="query" placeholder="Tìm kiếm sản phẩm..." class="border rounded-l-lg px-3 py-2 w-64" value="<?php echo htmlspecialchars($query); ?>">
                     <button type="submit" class="btn-find ">
+=======
+                    <input type="text" name="query" placeholder="Tìm kiếm sản phẩm..." class="border rounded-l-lg px-3 py-2 w-64">
+                    <button type="submit" class="btn-find">
+>>>>>>> f5d4c5eac524cc3cb8b952d566b747fc3ee66b61
                         <i class="fas fa-search"></i>
                     </button>
                 </form>
@@ -98,6 +128,7 @@ $products = $stmt->fetchAll(PDO::FETCH_ASSOC);
                                 <button class="btn-delete text-red-500 hover:text-red-700 ml-2" onclick="deleteProduct(<?php echo $product['Id']; ?>)">
                                     <i class="fas fa-trash"></i> Xóa
                                 </button>
+
                             </div>
                         </li>
                     <?php endforeach; ?>
@@ -108,6 +139,7 @@ $products = $stmt->fetchAll(PDO::FETCH_ASSOC);
                 <?php endif; ?>
             </ul>
 
+<<<<<<< HEAD
             <div class="pagination">
                 <?php if ($currentPage > 1): ?>
                     <a href="?query=<?php echo htmlspecialchars($query); ?>&page=<?php echo $currentPage - 1; ?>">« Trang trước</a>
@@ -115,14 +147,34 @@ $products = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
                 <?php for ($i = 1; $i <= $totalPages; $i++): ?>
                     <a href="?query=<?php echo htmlspecialchars($query); ?>&page=<?php echo $i; ?>" class="<?php echo $i === $currentPage ? 'active' : ''; ?>">
+=======
+                        <!-- Phân trang -->
+                        <<div class="pagination">
+                <?php if ($page > 1): ?>
+                    <a href="?page=1" class="first">Đầu</a>
+                    <a href="?page=<?php echo $page - 1; ?>" class="prev">Trước</a>
+                <?php endif; ?>
+                
+                <?php for ($i = 1; $i <= $totalPages; $i++): ?>
+                    <a href="?page=<?php echo $i; ?>" class="<?php echo $i == $page ? 'current' : ''; ?>">
+>>>>>>> f5d4c5eac524cc3cb8b952d566b747fc3ee66b61
                         <?php echo $i; ?>
                     </a>
                 <?php endfor; ?>
 
+<<<<<<< HEAD
                 <?php if ($currentPage < $totalPages): ?>
                     <a href="?query=<?php echo htmlspecialchars($query); ?>&page=<?php echo $currentPage + 1; ?>">Trang sau »</a>
                 <?php endif; ?>
             </div>
+=======
+                <?php if ($page < $totalPages): ?>
+                    <a href="?page=<?php echo $page + 1; ?>" class="next">Tiếp theo</a>
+                    <a href="?page=<?php echo $totalPages; ?>" class="last">Cuối</a>
+                <?php endif; ?>
+            </div>
+
+>>>>>>> f5d4c5eac524cc3cb8b952d566b747fc3ee66b61
         </main>
     </div>
 </div>
@@ -250,6 +302,28 @@ $products = $stmt->fetchAll(PDO::FETCH_ASSOC);
 </div>
 
 <script>
+    // Phân trang
+function changePage(page) {
+    const form = document.createElement('form');
+    form.method = 'GET';
+    form.action = '';  // Truyền trang hiện tại hoặc URL bạn muốn (nếu có)
+
+    const inputPage = document.createElement('input');
+    inputPage.type = 'hidden';
+    inputPage.name = 'page';
+    inputPage.value = page;
+    form.appendChild(inputPage);
+
+    const inputQuery = document.createElement('input');
+    inputQuery.type = 'hidden';
+    inputQuery.name = 'query';
+    inputQuery.value = '<?php echo htmlspecialchars($query); ?>'; // Truyền từ khóa tìm kiếm nếu có
+    form.appendChild(inputQuery);
+
+    document.body.appendChild(form);
+    form.submit();
+}
+
     // Lắng nghe sự kiện click ở ngoài modal để đóng modal
     window.addEventListener('click', function(event) {
         const addModal = document.getElementById('addModal');
