@@ -13,7 +13,26 @@ if (isset($_SESSION['tendangnhap'])) {
     $user = null;
 }
 
-$stmt = $pdo->prepare("SELECT * FROM lienhe");
+// Số liên hệ trên mỗi trang
+$contactsPerPage = 10;
+
+// Lấy số trang hiện tại từ URL, nếu không có thì mặc định là 1
+$currentPage = isset($_GET['page']) ? (int)$_GET['page'] : 1;
+
+// Tính toán tổng số liên hệ
+$totalContactsQuery = $pdo->query("SELECT COUNT(*) FROM lienhe");
+$totalContacts = $totalContactsQuery->fetchColumn();
+
+// Tính toán tổng số trang
+$totalPages = ceil($totalContacts / $contactsPerPage);
+
+// Tính toán offset cho truy vấn
+$offset = ($currentPage - 1) * $contactsPerPage;
+
+// Lấy thông tin liên hệ
+$stmt = $pdo->prepare("SELECT * FROM lienhe LIMIT :limit OFFSET :offset");
+$stmt->bindValue(':limit', $contactsPerPage, PDO::PARAM_INT);
+$stmt->bindValue(':offset', $offset, PDO::PARAM_INT);
 $stmt->execute();
 $contacts = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
@@ -56,7 +75,7 @@ if (isset($_GET['error']) && $_GET['error'] == 1) {
                             </div>
                             <div>
                                 <!-- Nút chi tiết -->
-                                <button class="text-blue-500 hover:text-blue-700" onclick="openEditModal(<?php echo $contact['idlienhe']; ?>)">
+                                <button class="text-blue-500 hover:text-blue-700" onclick="openEdit Modal(<?php echo $contact['idlienhe']; ?>)">
                                     <i class="fas fa-info-circle"></i> Chi tiết
                                 </button>
 
@@ -71,6 +90,23 @@ if (isset($_GET['error']) && $_GET['error'] == 1) {
                     <p class="text-gray-600">Không có liên hệ nào trong hệ thống.</p>
                 <?php endif; ?>
             </ul>
+
+            <!-- Phân trang -->
+            <div class="pagination">
+                <?php if ($currentPage > 1): ?>
+                    <a href="?page=<?php echo $currentPage - 1; ?>">« Trước</a>
+                <?php endif; ?>
+
+                <?php for ($i = 1; $i <= $totalPages; $i++): ?>
+                    <a href="?page=<?php echo $i; ?>" class="<?php echo $i === $currentPage ? 'active' : ''; ?>">
+                        <?php echo $i; ?>
+                    </a>
+                <?php endfor; ?>
+
+                <?php if ($currentPage < $totalPages): ?>
+                    <a href="?page=<?php echo $currentPage + 1; ?>">Tiếp »</a>
+                <?php endif; ?>
+            </div>
         </main>
     </div>
 </div>
@@ -127,7 +163,7 @@ if (isset($_GET['error']) && $_GET['error'] == 1) {
                     sdtInput.value = data.sdt;
                     noiDungInput.value = data.noidung;
                     trangThaiInput.value = data.idnguoidung ? 'Đã tạo tài khoản' : 'Chưa tạo tài khoản';
-                    contactIdInput.value = data.idlienhe;
+                    contactIdInput .value = data.idlienhe;
                 }
             });
 

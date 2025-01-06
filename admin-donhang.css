@@ -149,3 +149,36 @@ ul{
         padding: 15px;
     }
 }
+.pagination {
+    display: flex;
+    justify-content: center; /* Căn giữa phần phân trang */
+    margin-top: 20px; /* Khoảng cách phía trên */
+}
+
+.pagination a {
+    display: inline-block;
+    padding: 10px 15px; /* Khoảng cách bên trong */
+    margin: 0 5px; /* Khoảng cách giữa các nút */
+    border: 1px solid #007bff; /* Đường viền */
+    border-radius: 5px; /* Bo tròn góc */
+    color: #007bff; /* Màu chữ */
+    text-decoration: none; /* Bỏ gạch chân */
+    transition: background-color 0.3s, color 0.3s; /* Hiệu ứng chuyển đổi */
+}
+
+.pagination a:hover {
+    background-color: #007bff; /* Màu nền khi hover */
+    color: white; /* Màu chữ khi hover */
+}
+
+.pagination a.active {
+    background-color: #007bff; /* Màu nền cho trang hiện tại */
+    color: white; /* Màu chữ cho trang hiện tại */
+    border: 1px solid #007bff; /* Đường viền cho trang hiện tại */
+}
+
+.pagination a:disabled {
+    color: #ccc; /* Màu chữ cho nút không hoạt động */
+    border: 1px solid #ccc; /* Đường viền cho nút không hoạt động */
+    cursor: not-allowed; /* Con trỏ không cho phép */
+}

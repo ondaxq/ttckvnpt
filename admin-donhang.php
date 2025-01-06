@@ -13,6 +13,22 @@ if (isset($_SESSION['tendangnhap'])) {
     $user = null;
 }
 
+// Số đơn hàng trên mỗi trang
+$ordersPerPage = 10;
+
+// Lấy số trang hiện tại từ URL, nếu không có thì mặc định là 1
+$currentPage = isset($_GET['page']) ? (int)$_GET['page'] : 1;
+
+// Tính toán tổng số đơn hàng
+$totalOrdersQuery = $pdo->query("SELECT COUNT(*) FROM donhang");
+$totalOrders = $totalOrdersQuery->fetchColumn();
+
+// Tính toán tổng số trang
+$totalPages = ceil($totalOrders / $ordersPerPage);
+
+// Tính toán offset cho truy vấn
+$offset = ($currentPage - 1) * $ordersPerPage;
+
 // Lấy thông tin đơn hàng kết hợp với người đặt, chi tiết sản phẩm và tính thành tiền
 $stmt = $pdo->prepare("
     SELECT 
@@ -29,8 +45,11 @@ $stmt = $pdo->prepare("
     JOIN chitietdonhang ON donhang.iddonhang = chitietdonhang.iddonhang
     JOIN sanpham ON chitietdonhang.idsanpham = sanpham.id
     GROUP BY donhang.iddonhang
-    ORDER BY donhang.thoigiandat DESC;
+    ORDER BY donhang.thoigiandat DESC
+    LIMIT :limit OFFSET :offset;
 ");
+$stmt->bindValue(':limit', $ordersPerPage, PDO::PARAM_INT);
+$stmt->bindValue(':offset', $offset, PDO::PARAM_INT);
 $stmt->execute();
 $orders = $stmt->fetchAll(PDO::FETCH_ASSOC);  
 
@@ -60,7 +79,7 @@ if (isset($_GET['error']) && $_GET['error'] == 1) {
     <div class="flex flex-1">
         <?php include 'admin-sideitems.php'; ?>
         <main class="flex-1 p-6">
-        <div class="flex items-center justify-between mb-6">
+        <div class="flex items -center justify-between mb-6">
             <h1 class="text-3xl font-bold">Quản lý đơn hàng</h1>
         </div>
             
@@ -90,7 +109,6 @@ if (isset($_GET['error']) && $_GET['error'] == 1) {
                                 </p>
                             </div>
                             <div >
-                                <!-- Hiển thị Thành tiền -->
                                 <p class="text-blue-600">Tổng tiền: </p>
                                 <p class="text-blue-600"><?php echo number_format($order['thanhtien'], 0, ',', '.'); ?>đ</p>
                             </div>
@@ -110,6 +128,23 @@ if (isset($_GET['error']) && $_GET['error'] == 1) {
                     </li>
                 <?php endif; ?>
             </ul>
+
+            <!-- Phân trang -->
+            <div class="pagination">
+                <?php if ($currentPage > 1): ?>
+                    <a href="?page=<?php echo $currentPage - 1; ?>">« Trước</a>
+                <?php endif; ?>
+
+                <?php for ($i = 1; $i <= $totalPages; $i++): ?>
+                    <a href="?page=<?php echo $i; ?>" class="<?php echo $i === $currentPage ? 'active' : ''; ?>">
+                        <?php echo $i; ?>
+                    </a>
+                <?php endfor; ?>
+
+                <?php if ($currentPage < $totalPages): ?>
+                    <a href="?page=<?php echo $currentPage + 1; ?>">Tiếp »</a>
+                <?php endif; ?>
+            </div>
         </main>
     </div>
 </div>
@@ -163,7 +198,6 @@ if (isset($_GET['error']) && $_GET['error'] == 1) {
     </div>
 </div>
 
-
 <script>
 function openOrderDetailModal(orderId) {
     // Mở modal khi nhấn nút "Chi tiết"
@@ -205,7 +239,6 @@ function closeOrderModal() {
     document.getElementById('orderDetailModal').style.display = 'none';  // Ẩn modal khi đóng
 }
 
-
 function deleteOrder(orderId) {
     if (confirm("Bạn có chắc chắn muốn xóa đơn hàng này không?")) {
         fetch('admin-donhang-xoa.php', {
@@ -232,7 +265,6 @@ function deleteOrder(orderId) {
         });
     }
 }
-
 </script>
 </body>
 </html>

@@ -12,7 +12,26 @@ if (isset($_SESSION['tendangnhap'])) {
     $user = null;
 }
 
-$stmt = $pdo->prepare("SELECT * FROM nguoidung");
+// Số người dùng trên mỗi trang
+$usersPerPage = 10;
+
+// Lấy số trang hiện tại từ URL, nếu không có thì mặc định là 1
+$currentPage = isset($_GET['page']) ? (int)$_GET['page'] : 1;
+
+// Tính toán tổng số người dùng
+$totalUsersQuery = $pdo->query("SELECT COUNT(*) FROM nguoidung");
+$totalUsers = $totalUsersQuery->fetchColumn();
+
+// Tính toán tổng số trang
+$totalPages = ceil($totalUsers / $usersPerPage);
+
+// Tính toán offset cho truy vấn
+$offset = ($currentPage - 1) * $usersPerPage;
+
+// Lấy danh sách người dùng với phân trang
+$stmt = $pdo->prepare("SELECT * FROM nguoidung LIMIT :limit OFFSET :offset");
+$stmt->bindValue(':limit', $usersPerPage, PDO::PARAM_INT);
+$stmt->bindValue(':offset', $offset, PDO::PARAM_INT);
 $stmt->execute();
 $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
 ?>
@@ -25,7 +44,6 @@ $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
     <link rel="stylesheet" type="text/css" href="admin.css?<?php echo time(); ?>" />
     <link rel="stylesheet" type="text/css" href="admin-nguoidung.css?<?php echo time(); ?>" />
-    
 </head>
 <body class="bg-gray-100">   
 <?php include 'admin-header.php'; ?>
@@ -39,22 +57,19 @@ $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
             
             <ul class="bg-white shadow-md rounded-lg border border-gray-200">
                 <?php if ($users): ?>
-                    <?php foreach ($users as $users): ?>
-                        <li id="user-<?php echo $users['idnguoidung']; ?>" class="p-4 border-b border-gray-200 flex justify-between items-center">
+                    <?php foreach ($users as $user): ?>
+                        <li id="user-<?php echo $user['idnguoidung']; ?>" class="p-4 border-b border-gray-200 flex justify-between items-center">
                             <div class="flex items-center">
                                 <div>
-                                    <h3 class="text-lg font-semibold"><?php echo htmlspecialchars($users['hoten']); ?></h3>
-                                    <p class="text-gray-600"><?php echo htmlspecialchars($users['sdt']); ?></p>
+                                    <h3 class="text-lg font-semibold"><?php echo htmlspecialchars($user['hoten']); ?></h3>
+                                    <p class="text-gray-600"><?php echo htmlspecialchars($user['sdt']); ?></p>
                                 </div>
                             </div>
                             <div>
-                                <!-- Nút chi tiết -->
-                                <button class="text-blue-500 hover:text-blue-700" onclick="openEditModal(<?php echo $users['idnguoidung']; ?>)">
+                                <button class="text-blue-500 hover:text-blue-700" onclick="openEditModal(<?php echo $user['idnguoidung']; ?>)">
                                     <i class="fas fa-info-circle"></i> Chi tiết
                                 </button>
-
-                                <!-- Nút xóa -->
-                                <button class="text-red-500 hover:text-red-700 ml-2" onclick="deleteUser(<?php echo $users['idnguoidung']; ?>)">
+                                <button class="text-red-500 hover:text-red-700 ml-2" onclick="deleteUser (<?php echo $user['idnguoidung']; ?>)">
                                     <i class="fas fa-trash"></i> Xóa
                                 </button>
                             </div>
@@ -66,6 +81,23 @@ $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
                     </li>
                 <?php endif; ?>
             </ul>
+
+            <!-- Phân trang -->
+            <div class="pagination">
+                <?php if ($currentPage > 1): ?>
+                    <a href="?page=<?php echo $currentPage - 1; ?>">« Trước</a>
+                <?php endif; ?>
+
+                <?php for ($i = 1; $i <= $totalPages; $i++): ?>
+                    <a href="?page=<?php echo $i; ?>" class="<?php echo $i === $currentPage ? 'active' : ''; ?>">
+                        <?php echo $i; ?>
+                    </a>
+                <?php endfor; ?>
+
+                <?php if ($currentPage < $totalPages): ?>
+                    <a href="?page=<?php echo $currentPage + 1; ?>">Tiếp »</a>
+                <?php endif; ?>
+            </div>
         </main>
     </div>
 </div>
@@ -96,7 +128,7 @@ $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
             <div class="prob">
                 <label for="vaitro" class="block text-sm font-medium text-gray-700">Vai trò</label>
                 <select name="vaitro" id="vaitro" class="mt-1 p-2 w-full border border-gray-300 rounded-md">
-                    <option value="0">User</option>
+                    <option value="0">User </option>
                     <option value="1">Admin</option>
                 </select>
             </div>
@@ -124,7 +156,7 @@ function openEditModal(userId) {
             document.getElementById('userId').value = data.idnguoidung;
             document.getElementById('hoten').value = data.hoten;
             document.getElementById('sdt').value = data.sdt;
-            document.getElementById('email').value = data.email;
+ document.getElementById('email').value = data.email;
             document.getElementById('vaitro').value = data.vaitro; 
 
             // Đổi tiêu đề modal khi chỉnh sửa
@@ -154,7 +186,7 @@ window.addEventListener('click', function(event) {
     }
 });
 
-function deleteUser(userId) {
+function deleteUser (userId) {
     if (confirm('Bạn có chắc chắn muốn xóa người dùng này không?')) {
         
         fetch('admin-xoa-nguoidung.php', {
