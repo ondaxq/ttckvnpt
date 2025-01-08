@@ -2,7 +2,7 @@
     <div class="footer-content">
     <div class="authors">
         <p>
-            <a>VNPT Hà Tĩnh</a>
+        <a>Nhóm VNPT Hà Tĩnh</a>
         </p>
     </div>
     <div class="social-media">

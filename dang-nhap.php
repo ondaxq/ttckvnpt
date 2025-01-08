@@ -36,9 +36,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
             $_SESSION['user_id'] = $user['idnguoidung'];
             $_SESSION['tendangnhap'] = $tendangnhap;
-
+            $_SESSION['user'] = $user; 
             if ($user['vaitro'] == 0) {
-                header("Location: home.php");  
+                header("Location: home-da-dang-nhap.php");  
             } else {
                 header("Location: admin.php");  
             }
