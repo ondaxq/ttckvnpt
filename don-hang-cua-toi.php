@@ -57,6 +57,7 @@ if ($user) {
                     <th>Địa chỉ</th>
                     <th>Sản phẩm</th>
                     <th>Trạng thái</th>
+                    <th>Thao tác</th>
                 </tr>
             </thead>
             <tbody>
@@ -74,7 +75,21 @@ if ($user) {
                                      else {
                                         echo ('Chưa xác nhận');
                                      } ?></td>
+                                   <td><?php if($order['tt'] == 2)
+                                     {
+                                     ?>
+                                     <button class="text-red-500 hover:text-red-700 ml-2"  disabled>
+                                    <i class="fas fa-trash"></i> Hủy đơn
+                                    </button>
+                                     <?php
+                                     } else {?>
+                                     <button class="text-red-500 hover:text-red-700 ml-2" onclick="deleteOrder(<?php echo $order['iddonhang']; ?>)">
+                                     <i class="fas fa-trash"></i> Hủy đơn
+                                 </button>
+                                 <?php }?>
+                                </td>  
                     </tr>
+                    
                 <?php endforeach; ?>
             </tbody>
         </table>
@@ -83,3 +98,32 @@ if ($user) {
     <?php include 'footer.php'; ?>
 </body>
 </html>
+<script>
+    function deleteOrder(orderId) {
+    if (confirm("Bạn có chắc chắn muốn hủy đơn hàng này không?")) {
+        fetch('admin-donhang-xoa.php', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ id: orderId }) 
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                const orderElement = document.getElementById('order-' + orderId);
+                if (orderElement) {
+                    orderElement.remove();  
+                }
+                alert("Đơn hàng đã được hủy thành công.");
+                location.reload();
+            } else {
+                alert("Lỗi: " + (data.error || "Không thể hủy đơn hàng."));
+            }
+        })
+        .catch(error => {
+            alert("Lỗi kết nối: " + error.message);  
+        });
+    }
+}
+</script>

@@ -135,10 +135,15 @@ if (isset($_GET['error']) && $_GET['error'] == 1) {
                             <div>
                             <?php if($order['tt'] == 0)
                                      { ?>
-                            <button class="text-blue-500 hover:text-blue-700" onclick="updatettOrder(<?php echo $order['iddonhang']; ?>)">
+                                <button class="text-blue-500 hover:text-blue-700" onclick="updatettOrder(<?php echo $order['iddonhang']; ?>)">
                                     <i class="fas fa-info-circle"></i> Xác nhận
                                 </button>
-                                <?php } ?>
+                                <?php }
+                                else {  ?>
+                                <button class="text-blue-500 hover:text-blue-700" disabled>
+                                    <i class="fas fa-info-circle"></i> Xác nhận
+                                </button>
+                                <?php }  ?>
                                 <button class="text-blue-500 hover:text-blue-700" onclick="openOrderDetailModal(<?php echo $order['iddonhang']; ?>)">
                                     <i class="fas fa-info-circle"></i> Chi tiết
                                 </button>
