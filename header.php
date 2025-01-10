@@ -32,7 +32,7 @@ $categories = $stmt->fetchAll(PDO::FETCH_ASSOC);
                 <li><a href="lien-he.php" class="menu-item">Liên hệ</a></li>
                 <li class="search-container">
                     <form action="tim-kiem.php" method="get">
-                        <input type="text" name="query" placeholder="Tìm kiếm sản phẩm..." class="search-input">
+                        <input type="text" name="query" placeholder="Tìm kiếm sản phẩm..." class="search-input" value="<?= (basename($_SERVER['PHP_SELF']) == 'tim-kiem.php') ? htmlspecialchars($query) : '' ?>">
                         <button type="submit" class="find-btn"><i class="fas fa-search"></i></button>
                     </form>
                 </li>

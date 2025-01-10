@@ -182,3 +182,100 @@ ul{
     border: 1px solid #ccc; /* Đường viền cho nút không hoạt động */
     cursor: not-allowed; /* Con trỏ không cho phép */
 }
+/*-------------------*/
+.order-list-container li {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start; /* Giữ nội dung trên cùng */
+    padding: 16px;
+    border-bottom: 1px solid #e2e8f0; /* Đường kẻ ngăn cách */
+    word-wrap: break-word; /* Tự động xuống dòng nếu nội dung quá dài */
+    overflow: hidden; /* Ẩn nội dung vượt quá */
+}
+
+.order-list-container li div {
+    max-width: 100%; /* Giới hạn chiều rộng */
+    word-wrap: break-word;
+}
+
+.order-list-container li div:nth-child(2) {
+    max-width: 250px; /* Giới hạn chiều rộng của phần danh sách sản phẩm */
+    text-overflow: ellipsis; /* Thêm dấu ... nếu nội dung quá dài */
+}
+.order-list-container li div:last-child {
+    min-width: 150px; /* Cố định độ rộng tối thiểu */
+    text-align: center; /* Căn giữa các nút */
+    display: flex;
+    flex-direction: column; /* Hiển thị nút theo cột */
+    gap: 8px; /* Khoảng cách giữa các nút */
+    text-align: left;
+    margin-right: 0;
+}
+
+.order-list-container {
+    list-style-type: none; /* Bỏ dấu chấm đầu dòng */
+    padding: 0; /* Bỏ padding mặc định */
+    margin: 0; /* Bỏ margin mặc định */
+}
+
+.order-list-container li {
+    display: flex; /* Sử dụng flexbox để căn chỉnh */
+    justify-content: space-between; /* Căn giữa các phần tử */
+    align-items: flex-start; /* Căn đầu theo chiều dọc */
+    padding: 16px; /* Khoảng cách bên trong */
+    border-bottom: 1px solid #e2e8f0; /* Đường kẻ ngăn cách */
+    word-wrap: break-word; /* Tự động xuống dòng nếu nội dung quá dài */
+}
+
+.order-list-container li div {
+    flex: 1; /* Cho phép các div chiếm không gian đều */
+    margin-right: 16px; /* Khoảng cách giữa các div */
+}
+
+.order-list-container li div p {
+    margin: 4px 0; /* Khoảng cách giữa các đoạn văn */
+}
+
+.order-list-container li button {
+    margin-top: 4px; /* Khoảng cách giữa các nút */
+    padding: 10px 12px; /* Padding cho nút */
+    border-radius: 4px; /* Bo tròn góc cho nút */
+    transition: background-color 0.3s; /* Hiệu ứng chuyển đổi cho nút */
+}
+
+.order-list-container li button:hover {
+    opacity: 0.8; /* Hiệu ứng hover cho nút */
+}
+
+@media (max-width: 768px) {
+    .order-list-container li {
+        flex-direction: column; /* Chuyển về hiển thị cột dọc trên màn hình nhỏ */
+        align-items: flex-start; /* Căn đầu theo chiều dọc */
+    }
+
+    .order-list-container li div {
+        margin-right: 0; /* Không có khoảng cách bên phải cho div */
+        width: 100%; /* Chiều rộng 100% cho các div */
+    }
+
+    .order-list-container li div:last-child {
+        text-align: left; /* Căn trái cho các nút bấm và tổng tiền */
+    }
+}
+.order-list-container li div:first-child {
+    flex-basis: 30%;
+}
+
+.order-list-container li div:nth-child(2) {
+    flex-basis: 50%;
+}
+
+.order-list-container li div:nth-child(3) {
+    flex-basis: 15%;
+}
+
+.order-list-container li div:last-child {
+    flex-basis: 5%;
+    margin-right: 0;
+    text-align: left;
+}

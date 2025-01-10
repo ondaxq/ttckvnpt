@@ -89,14 +89,14 @@ if (isset($_GET['error']) && $_GET['error'] == 1) {
                 <?php if ($orders): ?>
                     <?php foreach ($orders as $order): ?>
                         <li id="order-<?php echo $order['iddonhang']; ?>" class="p-4 border-b border-gray-200 flex justify-between items-center">
-                            <div class="flex items-center">
+                            <div class="flex-1">
                                 <div>
                                     <h3 class="text-lg font-semibold"><?php echo htmlspecialchars($order['tennguoidhang']); ?> (<?php echo htmlspecialchars($order['sdtnguoinhan']); ?>)</h3>
                                     <p class="text-gray-600">Địa chỉ: <?php echo htmlspecialchars($order['diachi']); ?></p>
                                     <p class="text-gray-600">Thời gian đặt: <?php echo htmlspecialchars($order['thoigiandat']); ?></p>
                                 </div>
                             </div>
-                            <div>
+                            <div class="flex-1">
                                 <p class="text-gray-800">Sản phẩm:</p>
                                 <p class="text-gray-800">
                                     <?php 
@@ -110,7 +110,7 @@ if (isset($_GET['error']) && $_GET['error'] == 1) {
                                     ?>
                                 </p>
                             </div>
-                            <div >
+                            <div class="flex-1">
                                 <p class="text-blue-600">Tổng tiền: </p>
                                 <p class="text-blue-600"><?php echo number_format($order['thanhtien'], 0, ',', '.'); ?>đ</p>
                                 <p class="text-blue-600">
@@ -132,7 +132,7 @@ if (isset($_GET['error']) && $_GET['error'] == 1) {
                                      } ?>
                                  </p>
                             </div>
-                            <div>
+                            <div class="flex-1">
                             <?php if($order['tt'] == 0)
                                      { ?>
                                 <button class="text-blue-500 hover:text-blue-700" onclick="updatettOrder(<?php echo $order['iddonhang']; ?>)">

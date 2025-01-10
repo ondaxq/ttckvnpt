@@ -1,3 +1,9 @@
+body {
+    font-family: Arial, sans-serif; /* Thay đổi font chữ cho toàn bộ trang */
+    background-color: #f4f4f4; /* Màu nền nhẹ nhàng */
+    margin: 0;
+    padding: 0;
+}
 
 h2 {
     text-align: center;
@@ -7,7 +13,8 @@ h2 {
 
 #contact-form {
     width: 30vw;
-    margin: 0 auto;
+    max-width: 600px; /* Giới hạn chiều rộng tối đa */
+    margin: 50px auto; /* Tăng khoảng cách trên và dưới */
     background: white;
     padding: 20px;
     border-radius: 8px;
@@ -18,42 +25,51 @@ label {
     display: block;
     margin-bottom: 8px;
     font-weight: bold;
+    color: #555; /* Màu chữ nhạt hơn */
 }
 
 .contact {
-    width: 93%;
+    width: 100%; /* Đảm bảo ô nhập liệu chiếm toàn bộ chiều rộng */
     padding: 10px;
     margin-bottom: 15px;
     border: 1px solid #ccc;
     border-radius: 4px;
     font-size: 16px;
+    transition: border-color 0.3s ease; /* Thêm hiệu ứng chuyển tiếp */
 }
+
 .contact:focus {
     border-color: #7b7b7b;
     outline: none;
+    box-shadow: 0 0 5px rgba(123, 123, 123, 0.5); /* Thêm bóng khi ô được chọn */
 }
 
 .send {
-    width: 50%;
-    background-color: #d3d3d3;
+    width: 48%; /* Giảm chiều rộng nút để có khoảng cách giữa chúng */
+    background-color: #be005f; /* Màu nền nút */
     color: white;
     border: none;
     padding: 10px 15px;
     border-radius: 4px;
     font-size: 16px;
     cursor: pointer;
-    margin-right: 10px;
+    margin-right: 2%; /* Khoảng cách giữa các nút */
     transition: background-color 0.3s ease;
 }
 
 .send:hover {
-    color: #be005f;
-    background-color: #efcddf;
+    background-color: #efcddf; /* Màu nền khi hover */
+    color: #be005f; /* Màu chữ khi hover */
 }
 
 .button-container {
     display: flex;
-    justify-content: flex-end; /* Căn các nút sang bên phải */
-    gap: 10px; /* Khoảng cách giữa các nút */
+    justify-content: space-between; /* Căn giữa các nút */
     margin-top: 10px; /* Khoảng cách phía trên */
+}
+
+@media (max-width: 768px) {
+    #contact-form {
+        width: 90vw; /* Đảm bảo form không quá rộng trên màn hình nhỏ */
+    }
 }
